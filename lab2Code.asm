@@ -84,7 +84,7 @@ update_display:
     LSL r1, #24
     ORR r2, r1
 
-    //STR r2, [r6] 
+    STR r2, [r6] 
 
     POP {r3, pc}
     
