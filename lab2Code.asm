@@ -11,6 +11,8 @@
 
 numbers: .word 0x3F, 0x6, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x7, 0xff, 0x6F, 0x77, 0x7C, 0x39, 0x5E, 0x79, 0x71
 
+counter: .word 0
+
 .text
 .global _start
 
@@ -21,8 +23,9 @@ numbers: .word 0x3F, 0x6, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x7, 0xff, 0x6F, 0x77, 0
 update_display_segment:
 
 update_display:
-    PUSH {r3, lr}
-
+    PUSH {lr}
+    LDR r7, =counter
+    LDR r3, [r7]
     //first display
     AND r0, r3, #0xf
     
@@ -86,18 +89,24 @@ update_display:
 
     STR r2, [r6] 
 
-    POP {r3, pc}
+    POP {pc}
     
 
 increment:
 PUSH {lr}
+LDR r7, =counter
+LDR r3, [r7]
 ADD r3, r3, #1
+STR r3, [r7]
 bl update_display
 POP {pc}
 
 decrement: 
 PUSH {lr}
+LDR r7, =counter
+LDR r3, [r7]
 SUB r3, r3, #1
+STR r3, [r7]
 bl update_display
 POP {pc}
 
@@ -127,7 +136,7 @@ _halt:
     POP {pc}
 
 _start:
-    MOV r3, #0
+    LDR r7, =counter
     LDR r4, =numbers
     LDR r5, =DISPLAYS_BASE_1
     LDR r6, =DISPLAYS_BASE_2

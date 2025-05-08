@@ -9,9 +9,40 @@
 .equ UART_DATA_REGISTER_ADDRESS, 0xff201000
 .equ UART_CONTROL_REGISTER_ADDRESS, 0xff201004
 
+/******************************************************************************
+    Define symbols
+******************************************************************************/
+// Proposed stack base addresses
+.equ SVC_MODE_STACK_BASE, 0x3FFFFFFF - 3 // set SVC stack to top of DDR3 memory
+.equ IRQ_MODE_STACK_BASE, 0xFFFFFFFF - 3 // set IRQ stack to A9 onchip memory
+
+// GIC Base addresses
+.equ GIC_CPU_INTERFACE_BASE, 0xFFFEC100
+.equ GIC_DISTRIBUTOR_BASE, 0xFFFED000
+
+// Other I/O device base addresses
+.equ LED_BASE, 0xff200000
+.equ SW_BASE, 0xff200040
+.equ BTN_BASE, 0xff200050
+.equ DISPLAYS_BASE, 0xff200020
+.equ UART_BASE, 0xff201000
+.equ UART_DATA_REGISTER, 0xff201000
+.equ UART_CONTROL_REGISTER, 0xff201004
+
+
 numbers: .word 0x3F, 0x6, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x7, 0xff, 0x6F, 0x77, 0x7C, 0x39, 0x5E, 0x79, 0x71
 
 .text
+.org 0x00  // Address of interrupt vector
+    B _start    // reset vector
+    B SERVICE_UND // undefined instruction vector
+    B SERVICE_SVC // software interrrupt (supervisor call) vector
+    B SERVICE_ABT_INST // aborted prefetch vector
+    B SERVICE_ABT_DATA // aborted data vector
+    .word 0 // unused vector
+    B SERVICE_IRQ // IRQ interrupt vector
+    B SERVICE_FIQ // FIQ interrupt vector
+
 .global _start
 
 
@@ -133,8 +164,20 @@ _start:
     LDR r6, =DISPLAYS_BASE_2
 
 
+    /* 1. Set up stack pointers for IRQ and SVC processor modes */
+    MSR CPSR_c, #0b11010010 // change to IRQ mode with interrupts disabled
+    LDR SP, =IRQ_MODE_STACK_BASE // initiate IRQ mode stack
+
+    MSR CPSR, #0b11010011 // change to supervisor mode, interrupts disabled
+    LDR SP, =SVC_MODE_STACK_BASE // initiate supervisor mode stack
+
+    /* 2. Configure the Generic Interrupt Controller (GIC). Use the given help function CONFIG_GIC! */
+    // R0: The Interrupt ID to enable (only one supported for now)
+    MOV R0, #80  // UART Interrupt ID = 80
+    BL CONFIG_GIC // configure the ARM GIC
+
 loop: 
-    bl readUART
+    //bl readUART
     B loop
 
 
