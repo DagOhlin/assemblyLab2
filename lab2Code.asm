@@ -23,8 +23,11 @@ counter: .word 0
 update_display_segment:
 
 update_display:
-    PUSH {lr}
+    PUSH {r4,r5,r6,lr}
     LDR r7, =counter
+    LDR r4, =numbers
+    LDR r5, =DISPLAYS_BASE_1
+    LDR r6, =DISPLAYS_BASE_2
     LDR r3, [r7]
     //first display
     AND r0, r3, #0xf
@@ -89,7 +92,7 @@ update_display:
 
     STR r2, [r6] 
 
-    POP {pc}
+    POP {r4,r5,r6,pc}
     
 
 increment:
@@ -136,11 +139,6 @@ _halt:
     POP {pc}
 
 _start:
-    LDR r7, =counter
-    LDR r4, =numbers
-    LDR r5, =DISPLAYS_BASE_1
-    LDR r6, =DISPLAYS_BASE_2
-
 
 loop: 
     bl readUART
