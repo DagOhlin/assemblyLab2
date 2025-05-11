@@ -116,7 +116,7 @@ update_display:
 
     STR r2, [r6] 
 
-    POP {r0,r1,r2,r3,r4,r5,r6,r12,lr}
+    POP {r0,r1,r2,r3,r4,r5,r6,r12,pc}
     
 
 increment:
@@ -201,15 +201,6 @@ _main:
 
 
 
-
-
-calls_decrement:
-    BL decrement
-    B write_to_edge
-
-calls_increment:
-    BL increment
-    B write_to_edge
 
 
 SERVICE_IRQ:
