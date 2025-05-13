@@ -56,21 +56,20 @@ update_display:
     //first display
     AND r0, r3, #0xf
     
-    LDR r1, [r4, r0, LSL #2]    // Hexadecimal value to write
-    MOV r2, r1              // Write to the display
+    LDR r1, [r4, r0, LSL #2]    
+    MOV r2, r1              
     //disp 2
                             
     LSR r3, #4
     AND r0, r3, #0xf
-    LDR r1, [r4, r0, LSL #2]    // Hexadecimal value to write
+    LDR r1, [r4, r0, LSL #2]    
     LSL r1, #8
     ORR r2, r1
 
     //disp 3
-                            
     LSR r3, #4
     AND r0, r3, #0xf
-    LDR r1, [r4, r0, LSL #2]    // Hexadecimal value to write
+    LDR r1, [r4, r0, LSL #2]    
     LSL r1, #16
     ORR r2, r1
     
@@ -78,23 +77,23 @@ update_display:
                             
     LSR r3, #4
     AND r0, r3, #0xf
-    LDR r1, [r4, r0, LSL #2]    // Hexadecimal value to write
+    LDR r1, [r4, r0, LSL #2]    
     LSL r1, #24
     ORR r2, r1
 
-    STR r2, [r5]  //write to first 5 displays
+    STR r2, [r5]  
 
    //first display
     LSR r3, #4
     AND r0, r3, #0xf
     
-    LDR r1, [r4, r0, LSL #2]    // Hexadecimal value to write
-    MOV r2, r1              // Write to the display
+    LDR r1, [r4, r0, LSL #2]    
+    MOV r2, r1              
     //disp 2
                             
     LSR r3, #4
     AND r0, r3, #0xf
-    LDR r1, [r4, r0, LSL #2]    // Hexadecimal value to write
+    LDR r1, [r4, r0, LSL #2]   
     LSL r1, #8
     ORR r2, r1
 
@@ -102,7 +101,7 @@ update_display:
                             
     LSR r3, #4
     AND r0, r3, #0xf
-    LDR r1, [r4, r0, LSL #2]    // Hexadecimal value to write
+    LDR r1, [r4, r0, LSL #2]   
     LSL r1, #16
     ORR r2, r1
     
@@ -110,7 +109,7 @@ update_display:
                             
     LSR r3, #4
     AND r0, r3, #0xf
-    LDR r1, [r4, r0, LSL #2]    // Hexadecimal value to write
+    LDR r1, [r4, r0, LSL #2]   
     LSL r1, #24
     ORR r2, r1
 
@@ -214,7 +213,7 @@ SERVICE_IRQ:
 CHECK_UART_INTERRUPT:
     CMP R5, #73  // UART Interrupt ID
 
-    BNE SERVICE_IRQ_DONE // if not recognized, some error handling or just return from interrupt
+    BNE SERVICE_IRQ_DONE 
 
     LDR R0, =BTN_BASE               
     LDR R1, [R0, #0x0C]     
